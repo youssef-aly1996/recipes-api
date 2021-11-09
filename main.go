@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"net/http"
 	"time"
 
@@ -34,8 +35,14 @@ func newRecipeHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, recipe)
 }
 
+func listRecipesHandler(c *gin.Context) {
+	c.JSON(http.StatusOK, recipes)
+	log.Println(recipes)
+}
+
 func main() {
 	router := gin.Default()
 	router.POST("/recipes", newRecipeHandler)
+	router.GET("/recipes", listRecipesHandler)
 	router.Run()
 }
