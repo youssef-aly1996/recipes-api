@@ -1,7 +1,8 @@
 package main
 
 import (
-	"log"
+	"encoding/json"
+	"io/ioutil"
 	"net/http"
 	"time"
 
@@ -13,6 +14,18 @@ var recipes [] Recipe
 
 func init()  {
 	recipes = make([]Recipe, 0)
+	file, _ := ioutil.ReadFile("recipes.json")
+	_ = json.Unmarshal([]byte(file), &recipes)
+	// f, err := os.Open("recipes.json") 
+	// if err != nil {
+	// 	fmt.Println(err)
+	// 	return
+	// }
+	// defer f.Close()
+	// recipes,err := ioutil.ReadAll(f)
+	// if err := json.Unmarshal(recipes, &recipes); err != nil {
+	// 	fmt.Println(err)
+	// }
 }
 type Recipe struct {
 	Id string `json:"id"`
@@ -37,12 +50,12 @@ func newRecipeHandler(c *gin.Context) {
 
 func listRecipesHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, recipes)
-	log.Println(recipes)
 }
 
 func main() {
 	router := gin.Default()
 	router.POST("/recipes", newRecipeHandler)
 	router.GET("/recipes", listRecipesHandler)
+	// router.PUT("/recipes/:id", updateRecipeHandler)
 	router.Run()
 }
